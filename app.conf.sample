@@ -1,0 +1,48 @@
+#!/usr/bin/env perl
+
+# PODNAME: app.conf
+# ABSTRACT: WebApp Configuration for FakePause
+
+use utf8;
+use strict;
+use warnings;
+
++{
+    #
+    # for Mojolicious hypnotoad server
+    #
+    hypnotoad => {
+        listen  => [ 'http://*:5002' ],
+        workers => 6,
+    },
+
+    #
+    # for site
+    #
+    secrets => [
+        '2014-02-27 02:22:55 Asia/Seoul',
+    ],
+
+    #
+    # FakePause
+    #
+    fakepause => {
+        repo => '/home/cpan/orepan',
+        cmd  => sub {
+            my ( $repo, $user, $file ) = @_;
+
+            return [
+                '/usr/local/bin/orepan.pl',
+                '--destination', $repo,
+                '--pause',       $user,
+                $file,
+            ];
+        },
+        #
+        # perl -MMIME::Base64 -E 'say encode_base64(join(":", @ARGV), q{});' FAKEPAUSEID fakepausepw
+        #
+        auth => {
+            SILEX => 'U0lMRVg6bWltZXBhc3N3b3Jk',
+        },
+    },
+};
