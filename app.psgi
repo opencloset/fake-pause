@@ -171,6 +171,10 @@ __DATA__
 / Footer
     #footer
       .container
+        %ul.list-unstyled
+          %li.pull-right
+            %a{ :href => "#top" } Back to top
+      .container
         %hr/
         .span6!= qq{&copy; $copyright. All Rights Reserved.}
         .span4.offset1
