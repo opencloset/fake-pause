@@ -1,9 +1,16 @@
 #!/usr/bin/env perl
 
+use utf8;
+
 use Mojolicious::Lite;
 
 use Path::Tiny;
 use Try::Tiny;
+
+#
+# plugin
+#
+plugin 'haml_renderer';
 
 #
 # default config
