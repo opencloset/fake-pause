@@ -19,7 +19,9 @@ use warnings;
     #
     # for site
     #
-    secrets => [
+    project_name => 'Fake Pause for SILEX',
+    project_desc => 'The Fake [Perl programming] Authors Upload Server',
+    secrets      => [
         '2014-02-27 02:22:55 Asia/Seoul',
     ],
 

@@ -55,7 +55,8 @@ __DATA__
 
 @@ index.html.ep
 % layout 'default';
-% title 'SILEX Fake Pause';
+% title 'README';
+
 <h1> SILEX Fake Pause </h1>
 
 <div>
@@ -86,6 +87,6 @@ password fakepausepw</pre>
 @@ layouts/default.html.ep
 <!DOCTYPE html>
 <html>
-  <head><title><%= title %></title></head>
+  <head><title><%= $project_name %> - <%= title %></title></head>
   <body><%= content %></body>
 </html>
