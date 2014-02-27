@@ -71,14 +71,31 @@ __DATA__
 
 %h1 How-To FakePause
 
-%h2 Dist::Zilla::PluginBundle::SILEX
+%h2 Dist::Zilla::Plugin::UploadToCPAN
 %div
   %p
-    != q{작업중인 프로젝트의 <code>dist.ini</code> 파일 내용은 다음과 같습니다.}
-  %pre
-    %code
+    != q{<code>Dist::Zilla</code>를 사용할 경우 <code>dist.ini</code> 파일에}
+    != q{<code>UploadToCPAN</code> 플러그인 설정을 추가합니다.}
+  :plain
+    <pre>
       $ cat dist.ini
-      name             = Dist-Zilla-PluginBundle-SILEX
+      name             = Your-Awesome-Module
+      license          = Perl_5
+      copyright_holder = SILEX
+      copyright_year   = 2014
+      author           = 김도형 - Keedi Kim <keedi@cpan.org>
+
+      [UploadToCPAN]
+      upload_uri     = http://pause.silex.kr
+      pause_cfg_file = /home/askdna/.pause.silex
+    </pre>
+  %p
+    != q{<code>Dist::Zilla::PluginBundle::SILEX</code> 플러그인 번들을 사용할 경우}
+    != q{<code>dist.ini</code> 파일에 <code>UploadToCPAN</code> 설정을 추가합니다.}
+  :plain
+    <pre>
+      $ cat dist.ini
+      name             = Your-Awesome-Module
       license          = Perl_5
       copyright_holder = SILEX
       copyright_year   = 2014
@@ -86,17 +103,19 @@ __DATA__
 
       [@SILEX]
       UploadToCPAN.upload_uri     = http://pause.silex.kr
-      UploadToCPAN.pause_cfg_file = /home/askdna/.pause.silex</pre>
+      UploadToCPAN.pause_cfg_file = /home/askdna/.pause.silex
+    </pre>
 
 %h2 ~/.pause.silex
 %div
   %p
     != q{<code>~/.pause.silex</code> 파일 내용은 다음과 같습니다.}
-  %pre
-    %code
+  :plain
+    <pre>
       $ cat ~/.pause.silex
       user     FAKEPAUSEID
       password fakepausepw</pre>
+    </pre>
 
 @@ layouts/default.html.haml
 !!! 5
