@@ -29,9 +29,22 @@ use warnings;
     nav_links       => {
         left  => [ ],
         right => [
-            { title => 'orepan', desc => 'OREPAN', url => 'http://orepan.silex.kr/authors/id/S/SI/SILEX/' },
-            { title => 'cpan',   desc => 'CPAN',   url => 'http://cpan.silex.kr/CPAN'                     },
-            { title => 'github', desc => 'GitHub', url => 'https://github.com/silexkr/fake-pause'         },
+            {
+                desc  => 'OREPAN',
+                url   => 'http://orepan.silex.kr/authors/id/S/SI/SILEX/',
+            },
+            {
+                desc  => 'CPAN',
+                url   => 'http://cpan.silex.kr/CPAN',
+            },
+            {
+                desc  => 'Dzil Profile',
+                url   => 'https://github.com/silexkr/dzil-profiles-silex',
+            },
+            {
+                desc  => 'GitHub',
+                url   => 'https://github.com/silexkr/fake-pause',
+            },
         ],
     },
     css_str => 'body{padding-top:50px}',
