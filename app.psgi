@@ -15,7 +15,12 @@ plugin 'haml_renderer';
 #
 # default config
 #
-app->defaults( %{ plugin Config => { default => { }}});
+app->defaults( %{ plugin Config => { default => {
+    js_str  => q{},
+    css_str => q{},
+    jses    => [],
+    csses   => [],
+}}});
 
 get '/' => sub {
   my $self = shift;
@@ -60,40 +65,185 @@ app->start;
 
 __DATA__
 
-@@ index.html.ep
-% layout 'default';
-% title 'README';
+@@ index.html.haml
+- layout 'default';
+- title 'README';
 
-<h1> SILEX Fake Pause </h1>
+%h1 How-To FakePause
 
-<div>
-  <p>
-    작업중인 프로젝트의 <code>dist.ini</code> 파일의 설정은 다음과 같습니다.
-  </p>
-  <pre>$ cat dist.ini
-name             = Dist-Zilla-PluginBundle-SILEX
-license          = Perl_5
-copyright_holder = SILEX
-copyright_year   = 2014
-author           = 김도형 - Keedi Kim <keedi@cpan.org>
+%h2 Dist::Zilla::PluginBundle::SILEX
+%div
+  %p
+    != q{작업중인 프로젝트의 <code>dist.ini</code> 파일 내용은 다음과 같습니다.}
+  %pre
+    %code
+      $ cat dist.ini
+      name             = Dist-Zilla-PluginBundle-SILEX
+      license          = Perl_5
+      copyright_holder = SILEX
+      copyright_year   = 2014
+      author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
-[@SILEX]
-UploadToCPAN.upload_uri     = http://pause.silex.kr
-UploadToCPAN.pause_cfg_file = /home/askdna/.pause.silex</pre>
-</div>
+      [@SILEX]
+      UploadToCPAN.upload_uri     = http://pause.silex.kr
+      UploadToCPAN.pause_cfg_file = /home/askdna/.pause.silex</pre>
 
-<div>
-  <p>
-    <code>~/.pause.silex</code> 파일의 설정은 다음과 같습니다.
-  </p>
-  <pre>$ cat ~/.pause.silex
-user     FAKEPAUSEID
-password fakepausepw</pre>
-</div>
+%h2 ~/.pause.silex
+%div
+  %p
+    != q{<code>~/.pause.silex</code> 파일 내용은 다음과 같습니다.}
+  %pre
+    %code
+      $ cat ~/.pause.silex
+      user     FAKEPAUSEID
+      password fakepausepw</pre>
 
-@@ layouts/default.html.ep
-<!DOCTYPE html>
-<html>
-  <head><title><%= $project_name %> - <%= title %></title></head>
-  <body><%= content %></body>
-</html>
+@@ layouts/default.html.haml
+!!! 5
+%html
+  %head
+    %title= "$project_name - " . title
+    = include 'layouts/default/meta'
+    = include 'layouts/default/css'
+    = include 'layouts/default/js'
+
+  %body
+    = include 'layouts/default/nav'
+    #content
+      .container
+        .row
+          .col-lg-9
+            = content
+
+    = include 'layouts/default/footer'
+    = include 'layouts/default/body-js'
+    = include 'layouts/default/google-analytics'
+
+@@ layouts/default/meta.html.haml
+/ META
+    %meta{:charset => "utf-8"}
+    %meta{:name => "author",                                content => "Keedi Kim"}
+    %meta{:name => "description",                           content => "#{$project_desc}"}
+    %meta{:name => "apple-mobile-web-app-capable",          content => "yes"}
+    %meta{:name => "apple-mobile-web-app-status-bar-style", content => "black-translucent"}
+
+@@ layouts/default/css.html.haml
+/ CSS
+    %link{:rel => "stylesheet", :type => "text/css", :href => "http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "http://fonts.googleapis.com/earlyaccess/nanumgothic.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "http://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "//netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css"}
+    - for my $css (@$csses) {
+      %link{:rel => "stylesheet", :type => "text/css", :href => "#{$css}"}
+    - }
+    - if ($css_str) {
+      :css
+        #{ $css_str }
+    - }
+
+@@ layouts/default/js.html.haml
+/ Javascript
+    / Le HTML5 shim, for IE6-8 support of HTML5 elements
+    /[if lt IE 9]
+      %script{ :type => "text/javascript" :src => "http://html5shim.googlecode.com/svn/trunk/html5.js" }
+
+@@ layouts/default/footer.html.haml
+/ Footer
+    #footer
+      .container
+        %hr/
+        .span6!= qq{&copy; $copyright. All Rights Reserved.}
+        .span4.offset1
+          %span.pull-right
+            Built by
+            %a{ :href => "http://bootswatch.com" } Bootswatch
+            ,
+            %a{ :href => "http://mojolicio.us" } Mojolicious
+            &
+            %a{ :href => "http://www.perl.org" } Perl
+
+@@ layouts/default/body-js.html.haml
+/ Javascript in body
+    %script{ :type => "text/javascript" :src => "//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js" }
+    %script{ :type => "text/javascript" :src => "//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js" }
+    - for my $js (@$jses) {
+      %script{ :type => "text/javascript" :src => "#{$js}" }
+    - }
+    - if ($js_str) {
+      :javascript
+        $(function() {
+          #{ $js_str }
+        });
+    - }
+
+@@ layouts/default/google-analytics.html.haml
+/ google analytics
+    - if ($google_analytics) {
+      :javascript
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      :javascript
+        try {
+          var pageTracker = _gat._getTracker("#{ $google_analytics }");
+          pageTracker._trackPageview();
+        } catch(err) {}
+    - }
+
+@@ layouts/error.html.haml
+!!! 5
+%html
+  %head
+    %title= "$project_name - " . title
+    = include 'layouts/default/meta'
+    = include 'layouts/default/css'
+    = include 'layouts/default/js'
+
+  %body
+    = include 'layouts/default/nav'
+
+    #content
+      .container
+        .row
+          .span2
+            = include 'layouts/default/header'
+          .span10
+            .widget
+              = content
+
+    = include 'layouts/default/footer'
+    = include 'layouts/default/body-js'
+    = include 'layouts/default/google-analytics'
+
+@@ not_found.html.haml
+- layout 'error', csses => [ 'error.css' ], jses => [];
+- title '404 Not Found';
+%h2 404 Not Found
+
+.error-details Sorry, an error has occured, Requested page not found!
+
+@@ layouts/default/nav.html.haml
+/ navigation
+    .navbar.navbar-default.navbar-fixed-top
+      .container
+        .navbar-header
+          %a.navbar-brand{ :href => "/" }= $project_name
+          %button.navbar-toggle{ type => "button", 'data-toggle' => "collapse", 'data-target' => "#navbar-main" }
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+        #navbar-main.navbar-collapse.collapse
+          - if ( @{ $nav_links->{left} } ) {
+            %ul.nav.navbar-nav
+              - for my $link ( @{ $nav_links->{left} } ) {
+                %li
+                  %a{ :href => "#{ $link->{url} }" }= $link->{desc}
+              - }
+          - }
+          - if ( @{ $nav_links->{right} } ) {
+            %ul.nav.navbar-nav.navbar-right
+              - for my $link ( @{ $nav_links->{right} } ) {
+                %li
+                  %a{ :href => "#{ $link->{url} }", :target => "_blank" }= $link->{desc}
+              - }
+          - }
