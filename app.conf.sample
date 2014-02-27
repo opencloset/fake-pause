@@ -19,11 +19,22 @@ use warnings;
     #
     # for site
     #
-    project_name => 'Fake Pause for SILEX',
-    project_desc => 'The Fake [Perl programming] Authors Upload Server',
-    secrets      => [
+    project_name     => 'Fake Pause for SILEX',
+    project_desc     => 'The Fake [Perl programming] Authors Upload Server',
+    copyright        => '2014 SILEX',
+    google_analytics => q{},
+    secrets          => [
         '2014-02-27 02:22:55 Asia/Seoul',
     ],
+    nav_links       => {
+        left  => [ ],
+        right => [
+            { title => 'orepan', url => 'http://orepan.silex.kr',                desc => 'OREPAN' },
+            { title => 'cpan',   url => 'http://cpan.silex.kr/CPAN',             desc => 'CPAN'   },
+            { title => 'github', url => 'https://github.com/silexkr/fake-pause', desc => 'GitHub' },
+        ],
+    },
+    css_str => 'body{padding-top:50px}',
 
     #
     # FakePause
