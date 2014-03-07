@@ -54,6 +54,7 @@ use warnings;
     #
     fakepause => {
         repo => '/home/darkpan/public_html',
+        cmd  => [qw( orepan2-inject )],
         auth => {
             #
             # perl -MMIME::Base64 -E 'say encode_base64(join(":", @ARGV), q{});' FAKEPAUSEID fakepausepw
