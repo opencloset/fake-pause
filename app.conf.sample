@@ -30,8 +30,8 @@ use warnings;
         left  => [ ],
         right => [
             {
-                desc  => 'OREPAN',
-                url   => 'http://orepan.silex.kr/authors/id/S/SI/SILEX/',
+                desc  => 'DarkPAN',
+                url   => 'https://darkpan.silex.kr',
             },
             {
                 desc  => 'CPAN',
@@ -53,7 +53,7 @@ use warnings;
     # FakePause
     #
     fakepause => {
-        repo => '/home/cpan/orepan',
+        repo => '/home/darkpan/public_html',
         auth => {
             #
             # perl -MMIME::Base64 -E 'say encode_base64(join(":", @ARGV), q{});' FAKEPAUSEID fakepausepw
