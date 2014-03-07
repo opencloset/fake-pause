@@ -83,7 +83,7 @@ __DATA__
       author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
       [UploadToCPAN]
-      upload_uri     = http://pause.silex.kr
+      upload_uri     = https://darkpan.silex.kr/pause
       pause_cfg_file = /home/askdna/.pause.silex
     </pre>
   %p
@@ -99,7 +99,7 @@ __DATA__
       author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
       [@SILEX]
-      UploadToCPAN.upload_uri     = http://pause.silex.kr
+      UploadToCPAN.upload_uri     = https://darkpan.silex.kr/pause
       UploadToCPAN.pause_cfg_file = /home/askdna/.pause.silex
     </pre>
 
