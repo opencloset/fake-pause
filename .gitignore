@@ -1,3 +1,4 @@
 !.gitkeep
+app.conf
 log/development.log
 log/production.log
