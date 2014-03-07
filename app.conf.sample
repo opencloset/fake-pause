@@ -35,7 +35,7 @@ use warnings;
             },
             {
                 desc  => 'CPAN',
-                url   => 'http://cpan.silex.kr/CPAN',
+                url   => 'http://cpan.silex.kr',
             },
             {
                 desc  => 'Dzil Profile',
