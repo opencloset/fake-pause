@@ -145,9 +145,9 @@ __DATA__
 
 @@ layouts/default/css.html.haml
 / CSS
-    %link{:rel => "stylesheet", :type => "text/css", :href => "http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600"}
-    %link{:rel => "stylesheet", :type => "text/css", :href => "http://fonts.googleapis.com/earlyaccess/nanumgothic.css"}
-    %link{:rel => "stylesheet", :type => "text/css", :href => "http://fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "//fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "//fonts.googleapis.com/earlyaccess/nanumgothic.css"}
+    %link{:rel => "stylesheet", :type => "text/css", :href => "//fonts.googleapis.com/earlyaccess/nanumgothiccoding.css"}
     %link{:rel => "stylesheet", :type => "text/css", :href => "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"}
     %link{:rel => "stylesheet", :type => "text/css", :href => "//netdna.bootstrapcdn.com/bootswatch/3.1.1/flatly/bootstrap.min.css"}
     - for my $css (@$csses) {
@@ -162,7 +162,7 @@ __DATA__
 / Javascript
     / Le HTML5 shim, for IE6-8 support of HTML5 elements
     /[if lt IE 9]
-      %script{ :type => "text/javascript" :src => "http://html5shim.googlecode.com/svn/trunk/html5.js" }
+      %script{ :type => "text/javascript" :src => "//html5shim.googlecode.com/svn/trunk/html5.js" }
 
 @@ layouts/default/footer.html.haml
 / Footer
