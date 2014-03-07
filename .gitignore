@@ -1,4 +1,5 @@
 !.gitkeep
 app.conf
+hypnotoad.pid
 log/development.log
 log/production.log
