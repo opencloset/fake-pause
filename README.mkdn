@@ -1,0 +1,9 @@
+RUN
+----
+
+    $ MOJO_HOME=. MOJO_CONFIG=app.conf MOJO_MODE=development hypnotoad app.psgi
+
+STOP
+-----
+
+    $ MOJO_HOME=. MOJO_CONFIG=app.conf hypnotoad app.psgi
