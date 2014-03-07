@@ -12,7 +12,7 @@ use warnings;
     # for Mojolicious hypnotoad server
     #
     hypnotoad => {
-        listen  => [ 'http://*:8000' ],
+        listen  => [ 'https://*:8000' ],
         workers => 6,
     },
 
