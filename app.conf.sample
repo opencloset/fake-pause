@@ -54,20 +54,10 @@ use warnings;
     #
     fakepause => {
         repo => '/home/cpan/orepan',
-        cmd  => sub {
-            my ( $repo, $user, $file ) = @_;
-
-            return [
-                '/usr/local/bin/orepan.pl',
-                '--destination', $repo,
-                '--pause',       $user,
-                $file,
-            ];
-        },
-        #
-        # perl -MMIME::Base64 -E 'say encode_base64(join(":", @ARGV), q{});' FAKEPAUSEID fakepausepw
-        #
         auth => {
+            #
+            # perl -MMIME::Base64 -E 'say encode_base64(join(":", @ARGV), q{});' FAKEPAUSEID fakepausepw
+            #
             SILEX => 'U0lMRVg6bWltZXBhc3N3b3Jk',
         },
     },

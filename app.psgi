@@ -43,19 +43,16 @@ post '/' => sub {
             && app->config->{fakepause}{auth}{$user} eq $auth
             ;
 
-    {
-        my $tempdir = Path::Tiny->tempdir;
-        my $path    = $tempdir->child($filename);
-        $file->move_to($path);
-
-        my $cmd = app->config->{fakepause}{cmd}->(
-            app->config->{fakepause}{repo},
-            $user,
-            $path,
-        );
-
-        try { system @$cmd } catch { app->log->warn("failed to inject") };
-    }
+    my $path = path(join(
+        '/',
+        app->config->{fakepause}{repo},
+        'id',
+        substr( lc($user), 0, 1 ),
+        substr( lc($user), 0, 2 ),
+        lc($user),
+        $filename,
+    ))->touchpath;
+    $file->move_to($path);
 
     $self->render(text => 'auth success', status => 200);
 };
