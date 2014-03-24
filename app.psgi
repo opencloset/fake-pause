@@ -52,11 +52,18 @@ post '/' => sub {
         $filename,
     );
 
-    my $path = path("app->config->{fakepause}{repo}/$module")->touchpath;
+    my $path = path( app->config->{fakepause}{repo} . "/$module" )->touchpath;
     $file->move_to($path);
 
-    app->log->info( "uploaded to " . $self->url_for("/$module") );
-    $self->render(text => $self->url_for("/$module"), status => 200);
+    #
+    # for reverse proxy
+    #
+    my $uri = $self->req->headers->header('x-original-uri') || q{};
+    $uri =~ s{/$}{};
+    $uri .= "/$module";
+
+    app->log->info( "uploaded to " . $self->url_for($uri)->to_abs );
+    $self->render(text => $self->url_for($uri)->to_abs, status => 200);
 };
 
 app->secrets( app->defaults->{secrets} );
