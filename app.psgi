@@ -45,9 +45,10 @@ post '/' => sub {
 
     my $module = join(
         '/',
+        'authors',
         'id',
-        substr( lc($user), 0, 1 ),
-        substr( lc($user), 0, 2 ),
+        substr( uc($user), 0, 1 ),
+        substr( uc($user), 0, 2 ),
         lc($user),
         $filename,
     );
