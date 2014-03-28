@@ -49,7 +49,7 @@ post '/' => sub {
         'id',
         substr( uc($user), 0, 1 ),
         substr( uc($user), 0, 2 ),
-        lc($user),
+        uc($user),
         $filename,
     );
 
