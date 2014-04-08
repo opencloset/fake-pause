@@ -106,7 +106,7 @@ __DATA__
       [@SILEX]
       UploadToCPAN.upload_uri     = https://darkpan.silex.kr/pause
       UploadToCPAN.pause_cfg_dir  = .
-      UploadToCPAN.pause_cfg_file = /home/askdna/.pause.silex
+      UploadToCPAN.pause_cfg_file = .pause.silex
     </pre>
 
 %h2 .pause.silex
