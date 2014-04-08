@@ -88,7 +88,8 @@ __DATA__
 
       [UploadToCPAN]
       upload_uri     = https://darkpan.silex.kr/pause
-      pause_cfg_file = /home/askdna/.pause.silex
+      pause_cfg_dir  = .
+      pause_cfg_file = .pause.silex
     </pre>
   %p
     != q{<code>Dist::Zilla::PluginBundle::SILEX</code> 플러그인 번들을 사용할 경우}
@@ -104,19 +105,22 @@ __DATA__
 
       [@SILEX]
       UploadToCPAN.upload_uri     = https://darkpan.silex.kr/pause
+      UploadToCPAN.pause_cfg_dir  = .
       UploadToCPAN.pause_cfg_file = /home/askdna/.pause.silex
     </pre>
 
-%h2 ~/.pause.silex
+%h2 .pause.silex
 %div
   %p
-    != q{<code>~/.pause.silex</code> 파일 내용은 다음과 같습니다.}
+    != q{<code>.pause.silex</code> 파일 내용은 다음과 같습니다.}
   :plain
     <pre>
-      $ cat ~/.pause.silex
+      $ cat .pause.silex
       user     FAKEPAUSEID
       password fakepausepw</pre>
     </pre>
+  %p
+    != q{<code>pause_cfg_dir</code> 값을 설정하지 않으면 홈디렉터리를 기본으로 설정합니다.}
 
 @@ layouts/default.html.haml
 !!! 5
