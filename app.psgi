@@ -252,6 +252,7 @@ __DATA__
 %html
   %head
     %title= "$project_name - " . title
+    %link{ :rel => 'icon', :type => 'image/png', :href => '/icon.png' }
     = include 'layouts/default/meta'
     = include 'layouts/default/css'
     = include 'layouts/default/js'
