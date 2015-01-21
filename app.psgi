@@ -4,13 +4,19 @@ use utf8;
 
 use Mojolicious::Lite;
 
+use CPAN::Common::Index::LocalPackage;
+use DateTime;
+use MIME::Base64;
 use Path::Tiny;
 use Try::Tiny;
+
+use OpenCloset::Schema;
 
 #
 # plugin
 #
 plugin 'haml_renderer';
+plugin 'RenderFile';
 
 #
 # default config
@@ -22,9 +28,101 @@ app->defaults( %{ plugin Config => { default => {
     csses   => [],
 }}});
 
+my $DB = OpenCloset::Schema->connect({
+    dsn      => app->config->{fakepause}{database}{dsn},
+    user     => app->config->{fakepause}{database}{user},
+    password => app->config->{fakepause}{database}{pass},
+    %{ app->config->{fakepause}{database}{opts} },
+});
+
+plugin 'authentication' => {
+    autoload_user => 1,
+    load_user     => sub {
+        my ( $app, $uid ) = @_;
+
+        my $user_obj = $DB->resultset('User')->find({ id => $uid });
+
+        return $user_obj
+    },
+    session_key   => 'access_token',
+    validate_user => sub {
+        my ( $self, $user, $pass, $extradata ) = @_;
+
+        my $user_obj = $DB->resultset('User')->find({ email => $user });
+        unless ($user_obj) {
+            app->log->warn("cannot find such user: $user");
+            return;
+        }
+
+        #
+        # GitHub #199
+        #
+        # check expires when login
+        #
+        my $now = DateTime->now( time_zone => app->config->{timezone} )->epoch;
+        unless ( $user_obj->expires && $user_obj->expires > $now ) {
+            app->log->warn( "$user\'s password is expired" );
+            return;
+        }
+
+        unless ( $user_obj->check_password($pass) ) {
+            app->log->warn("$user\'s password is wrong");
+            return;
+        }
+
+        unless ( $user_obj->user_info->staff ) {
+            app->log->warn("$user is not a staff");
+            return;
+        }
+
+        return $user_obj->id;
+    },
+};
+
 get '/' => sub {
-  my $self = shift;
-  $self->render('index');
+    my $self = shift;
+
+    my $path = path( app->config->{fakepause}{repo} . "/modules/02packages.details.txt.gz" );
+    my @modules;
+    if ( $path->exists ) {
+        my $index   = CPAN::Common::Index::LocalPackage->new({ source => $path });
+        @modules = $index->search_packages({ package => qr/.*/ });
+    }
+
+    $self->stash( modules => \@modules );
+    $self->render( 'index' );
+};
+
+get '/#id/#tarball' => sub {
+    my $self = shift;
+
+    my $id      = $self->param('id');
+    my $tarball = $self->param('tarball');
+
+    my $path = path(
+        app->config->{fakepause}{repo} . sprintf(
+            "/authors/id/%s/%s/%s/%s",
+            substr( $id, 0, 1 ),
+            substr( $id, 0, 2 ),
+            $id,
+            $tarball,
+        )
+    );
+    unless ( $path->exists ) {
+        app->log->warn("failed to find $path");
+        $self->render_not_found;
+        return;
+    }
+
+    my $ret = $self->render_file(
+        filepath => $path,
+        filename => $path->basename,
+    );
+    unless ($ret) {
+        app->log->warn("failed to preparing $path");
+        $self->render_not_found;
+        return;
+    }
 };
 
 post '/' => sub {
@@ -36,12 +134,13 @@ post '/' => sub {
 
     my ( $type, $auth ) = split q{ }, $self->req->headers->authorization;
 
-    return $self->render(text => 'auth failed', status => 401)
-        unless
-            $type eq 'Basic'
-            && app->config->{fakepause}{auth}{$user}
-            && app->config->{fakepause}{auth}{$user} eq $auth
-            ;
+    return $self->render(text => 'type is required', status => 401) unless $type;
+    return $self->render(text => 'auth is required', status => 401) unless $auth;
+    return $self->render(text => 'type is invalid',  status => 401) unless $type eq 'Basic';
+
+    my ( $u, $p ) = split q{:}, decode_base64($auth);
+    return $self->render(text => 'user is invalid',  status => 401) unless $user eq $u;
+    return $self->render(text => 'auth failed',      status => 401) unless $self->authenticate( lc($u), $p );
 
     my $module = join(
         '/',
@@ -61,6 +160,8 @@ post '/' => sub {
     $self->render(text => $uri, status => 200);
 };
 
+app->sessions->cookie_name( app->config->{cookie}{name} );
+app->sessions->cookie_path( app->config->{cookie}{path} );
 app->secrets( app->defaults->{secrets} );
 app->start;
 
@@ -68,11 +169,33 @@ __DATA__
 
 @@ index.html.haml
 - layout 'default';
-- title 'README';
+- title 'OpenCloset Perl Modules';
 
-%h1 How-To FakePause
+%h1 OpenCloset Perl Modules
 
-%h2 Dist::Zilla::Plugin::UploadToCPAN
+%h2 Module List
+
+%table.table.table-striped.table-bordered.table-hover
+  %thead
+    %tr
+      %th.center #
+      %th 이름
+      %th 버전
+  %tbody
+    - my $count = 0;
+    - for my $module (@$modules) {
+    -  ( my $uri = $module->{uri} ) =~ s{^cpan:///distfile}{};
+      %tr
+        %td.center= ++$count;
+        %td
+          %a{ :href => "#{ url_for($uri) }" }= $module->{package};
+        %td
+          %a{ :href => "#{ url_for($uri) }" }= $module->{version};
+    - }
+
+%h2 How-To FakePause
+
+%h3 Dist::Zilla::Plugin::UploadToCPAN
 %div
   %p
     != q{<code>Dist::Zilla</code>를 사용할 경우 <code>dist.ini</code> 파일에}
@@ -87,9 +210,11 @@ __DATA__
       author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
       [UploadToCPAN]
-      upload_uri     = https://darkpan.silex.kr/pause
+      upload_uri     = https://cpan.theopencloset.kr/pause
       pause_cfg_dir  = .
-      pause_cfg_file = .pause.silex
+      pause_cfg_file = .pause
+
+
     </pre>
   %p
     != q{<code>Dist::Zilla::PluginBundle::SILEX</code> 플러그인 번들을 사용할 경우}
@@ -104,15 +229,15 @@ __DATA__
       author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
       [@SILEX]
-      UploadToCPAN.upload_uri     = https://darkpan.silex.kr/pause
+      UploadToCPAN.upload_uri     = https://cpan.theopencloset.kr/pause
       UploadToCPAN.pause_cfg_dir  = .
-      UploadToCPAN.pause_cfg_file = .pause.silex
+      UploadToCPAN.pause_cfg_file = .pause
     </pre>
 
-%h2 .pause.silex
+%h3 .pause
 %div
   %p
-    != q{<code>.pause.silex</code> 파일 내용은 다음과 같습니다.}
+    != q{<code>.pause</code> 파일 내용은 다음과 같습니다.}
   :plain
     <pre>
       $ cat .pause.silex
@@ -120,7 +245,7 @@ __DATA__
       password fakepausepw</pre>
     </pre>
   %p
-    != q{<code>pause_cfg_dir</code> 값을 설정하지 않으면 홈디렉터리를 기본으로 설정합니다.}
+    != q{<code>pause_cfg_dir</code> 값을 설정하지 않으면 홈디렉터리를 기본으로 설정하므로 주의합니다.}
 
 @@ layouts/default.html.haml
 !!! 5

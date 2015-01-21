@@ -7,58 +7,93 @@ use utf8;
 use strict;
 use warnings;
 
+my $db_opts = $ENV{FAKE_PAUSE_DATABASE_OPTS} ? Mojo::JSON::decode_json( $ENV{FAKE_PAUSE_DATABASE_OPTS} ) : +{
+    quote_char        => q{`},
+    mysql_enable_utf8 => 1,
+    on_connect_do     => 'SET NAMES utf8',
+};
+#
+# RaiseError와 AutoCommit을 명시적으로 껐을때를 제외하고는 항상 켜줍니다.
+#
+$db_opts->{RaiseError} //= 1;
+$db_opts->{AutoCommit} //= 1;
+
 +{
     #
     # for Mojolicious hypnotoad server
     #
     hypnotoad => {
-        listen  => [ 'http://*:8000' ],
+        listen  => [ 'http://*:8003' ],
         workers => 6,
     },
 
     #
+    # session & cookies
+    #
+    cookie => {
+        name => 'fake-pause',
+        path => '/',
+    },
+    secrets => [
+        '2015-01-21 15:49:35 Asia/Seoul',
+    ],
+
+    #
+    # 시간대 설정
+    #
+    timezone => 'Asia/Seoul',
+
+    #
     # for site
     #
-    project_name     => 'Fake Pause for SILEX',
+    project_name     => 'Fake PAUSE for OpenCloset',
     project_desc     => 'The Fake [Perl programming] Authors Upload Server',
-    copyright        => '2014 SILEX',
+    copyright        => '2015 SILEX',
     google_analytics => q{},
-    secrets          => [
-        '2014-02-27 02:22:55 Asia/Seoul',
-    ],
     nav_links       => {
         left  => [ ],
         right => [
             {
-                desc  => 'DarkPAN',
-                url   => 'https://darkpan.silex.kr',
+                desc  => 'OpenCloset',
+                url   => 'https://www.theopencloset.net',
             },
             {
-                desc  => 'CPAN',
-                url   => 'http://cpan.silex.kr',
+                desc  => 'STAFF',
+                url   => 'https://staff.theopencloset.net',
             },
             {
-                desc  => 'Dzil Profile',
-                url   => 'https://github.com/silexkr/dzil-profiles-silex',
+                desc  => 'VISIT',
+                url   => 'https://visit.theopencloset.net',
             },
             {
                 desc  => 'GitHub',
-                url   => 'https://github.com/silexkr/fake-pause',
+                url   => 'https://github.com/opencloset/fake-pause',
             },
         ],
     },
-    css_str => 'body{padding-top:50px}',
+    css_str => <<'END_CSS',
+body {
+    padding-top:50px
+}
+th.center, td.center {
+    text-align: center;
+}
+.center, .align-center {
+    text-align: center !important;
+}
+END_CSS
 
     #
     # FakePause
     #
     fakepause => {
-        repo => '/home/darkpan/public_html',
-        auth => {
-            #
-            # perl -MMIME::Base64 -E 'say encode_base64(join(":", @ARGV), q{});' FAKEPAUSEID fakepausepw
-            #
-            SILEX => 'U0lMRVg6bWltZXBhc3N3b3Jk',
+        repo     => '/path/to/fake-pause',
+        database => {
+            dsn    => $ENV{FAKE_PAUSE_DATABASE_DSN}  || "dbi:mysql:fakepause:127.0.0.1",
+            name   => $ENV{FAKE_PAUSE_DATABASE_NAME} || 'fakepause',
+            user   => $ENV{FAKE_PAUSE_DATABASE_USER} || 'fakepause',
+            pass   => $ENV{FAKE_PAUSE_DATABASE_PASS} // 'fakepause',
+            opts   => $db_opts,
         },
     },
 };
