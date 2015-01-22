@@ -217,6 +217,7 @@ __DATA__
 
     </pre>
   %p
+    != q{<code>Dist::Zilla::PluginBundle::DAGOLDEN</code> 플러그인 번들이나}
     != q{<code>Dist::Zilla::PluginBundle::SILEX</code> 플러그인 번들을 사용할 경우}
     != q{<code>dist.ini</code> 파일에 <code>UploadToCPAN</code> 설정을 추가합니다.}
   :plain
@@ -228,7 +229,7 @@ __DATA__
       copyright_year   = 2014
       author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
-      [@SILEX]
+      [@DAGOLDEN]
       UploadToCPAN.upload_uri     = https://cpan.theopencloset.kr/pause
       UploadToCPAN.pause_cfg_dir  = .
       UploadToCPAN.pause_cfg_file = .pause
