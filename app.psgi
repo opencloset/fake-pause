@@ -210,7 +210,7 @@ __DATA__
       author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
       [UploadToCPAN]
-      upload_uri     = https://cpan.theopencloset.kr/pause
+      upload_uri     = https://cpan.theopencloset.net
       pause_cfg_dir  = .
       pause_cfg_file = .pause
 
@@ -230,7 +230,7 @@ __DATA__
       author           = 김도형 - Keedi Kim <keedi@cpan.org>
 
       [@DAGOLDEN]
-      UploadToCPAN.upload_uri     = https://cpan.theopencloset.kr/pause
+      UploadToCPAN.upload_uri     = https://cpan.theopencloset.net
       UploadToCPAN.pause_cfg_dir  = .
       UploadToCPAN.pause_cfg_file = .pause
     </pre>
