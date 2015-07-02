@@ -182,13 +182,20 @@ __DATA__
       %th 이름
       %th 버전
   %tbody
+    - use Path::Tiny;
     - my $count = 0;
+    - my %main_modules;
     - for my $module (@$modules) {
-    -  ( my $uri = $module->{uri} ) =~ s{^cpan:///distfile}{};
+    -   ( my $uri = $module->{uri} ) =~ s{^cpan:///distfile}{};
+    -   my @namespaces = split '-', path($uri)->basename;
+    -   pop @namespaces;
+    -   my $main_module = join '::', @namespaces;
+    -   push @{ $main_modules{$main_module} }, $module;
+    -   next if @{ $main_modules{$main_module} } > 1;
       %tr
         %td.center= ++$count;
         %td
-          %a{ :href => "#{ url_for($uri) }" }= $module->{package};
+          %a{ :href => "#{ url_for($uri) }" }= $main_module;
         %td
           %a{ :href => "#{ url_for($uri) }" }= $module->{version};
     - }
