@@ -2,7 +2,7 @@
 *.swp
 app.conf
 hypnotoad.pid
-log/development.log
-log/production.log
+log/development.log*
+log/production.log*
 public/authors
 public/modules
