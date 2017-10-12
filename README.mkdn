@@ -27,3 +27,8 @@ env `FAKE_PAUSE_REPO_PATH` 가 `/path/cpan` 이라고 한다면,
 ## 모듈 indexing ##
 
     $ orepan2-indexer /path/cpan
+
+## build docker image ##
+
+    $ docker build -t opencloset/fake-pause .
+    $ docker build -f Dockerfile.minion -t opencloset/fake-pause/minion .
