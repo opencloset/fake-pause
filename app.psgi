@@ -35,6 +35,8 @@ my $DB = OpenCloset::Schema->connect({
     %{ app->config->{fakepause}{database}{opts} },
 });
 
+plugin Minion => { SQLite => 'sqlite:db/minion.db' };
+
 plugin 'authentication' => {
     autoload_user => 1,
     load_user     => sub {
@@ -78,6 +80,17 @@ plugin 'authentication' => {
         return $user_obj->id;
     },
 };
+
+app->minion->add_task(
+    orepan_indexing => sub {
+        my ($job, $module) = @_;
+
+        $job->app->log->info("Orepan Indexing for [$module]...");
+        $job->app->log->info('$ orepan2-indexer ' . $job->app->config->{fakepause}{repo});
+        system "orepan2-indexer", $job->app->config->{fakepause}{repo};
+        $job->app->log->info("Done");
+    }
+);
 
 get '/' => sub {
     my $self = shift;
@@ -157,6 +170,9 @@ post '/' => sub {
 
     my $uri = $self->url_for("/$module")->to_abs;
     app->log->info("uploaded to $uri");
+
+    $self->minion->enqueue(orepan_indexing => [$module]);
+
     $self->render(text => $uri, status => 200);
 };
 

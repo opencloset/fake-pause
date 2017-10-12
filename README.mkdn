@@ -7,3 +7,28 @@ STOP
 -----
 
     $ MOJO_HOME=. MOJO_CONFIG=app.conf hypnotoad app.psgi
+
+## jobqueue ##
+
+    $ MOJO_CONFIG=app.conf ./app.psgi minion worker
+
+## 모듈 업로드 ##
+
+env `FAKE_PAUSE_REPO_PATH` 가 `/path/cpan` 이라고 한다면,
+
+```
+/path/cpan/modules/02packages.details.txt.gz
+/path/cpan/authors/id/S/ST/STAFF@THEOPENCLOSET.NET/Iamport-REST-Client-v0.0.1.tar.gz
+/path/cpan/authors/id/S/ST/STAFF@THEOPENCLOSET.NET/Iamport-REST-Client-v0.0.2.tar.gz
+```
+
+이런식으로 데이터가 저장됩니다.
+
+## 모듈 indexing ##
+
+    $ orepan2-indexer /path/cpan
+
+## build docker image ##
+
+    $ docker build -t opencloset/fake-pause .
+    $ docker build -f Dockerfile.minion -t opencloset/fake-pause/minion .
