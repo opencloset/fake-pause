@@ -7,6 +7,7 @@ use Mojolicious::Lite;
 use CPAN::Common::Index::LocalPackage;
 use DateTime;
 use MIME::Base64;
+use OrePAN2::CLI::Indexer;
 use Path::Tiny;
 use Try::Tiny;
 
@@ -34,6 +35,8 @@ my $DB = OpenCloset::Schema->connect({
     password => app->config->{fakepause}{database}{pass},
     %{ app->config->{fakepause}{database}{opts} },
 });
+
+plugin Minion => { SQLite => 'sqlite:db/minion.db' };
 
 plugin 'authentication' => {
     autoload_user => 1,
@@ -78,6 +81,16 @@ plugin 'authentication' => {
         return $user_obj->id;
     },
 };
+
+app->minion->add_task(
+    orepan_indexing => sub {
+        my $job = shift;
+
+        print "Orepan Indexing...";
+        OrePAN2::CLI::Indexer->new->run('./public');
+        print "Done";
+    }
+);
 
 get '/' => sub {
     my $self = shift;
@@ -157,6 +170,9 @@ post '/' => sub {
 
     my $uri = $self->url_for("/$module")->to_abs;
     app->log->info("uploaded to $uri");
+
+    $self->minion->enqueue(orepan_indexing => []);
+
     $self->render(text => $uri, status => 200);
 };
 
