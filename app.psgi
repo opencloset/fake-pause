@@ -84,11 +84,11 @@ plugin 'authentication' => {
 
 app->minion->add_task(
     orepan_indexing => sub {
-        my $job = shift;
+        my ($job, $module) = @_;
 
-        print "Orepan Indexing...";
-        OrePAN2::CLI::Indexer->new->run('./public');
-        print "Done";
+        $job->app->log->info("Orepan Indexing for [$module]...");
+        OrePAN2::CLI::Indexer->new->run($job->app->config->{fakepause}{repo});
+        $job->app->log->info("Done");
     }
 );
 
@@ -171,7 +171,7 @@ post '/' => sub {
     my $uri = $self->url_for("/$module")->to_abs;
     app->log->info("uploaded to $uri");
 
-    $self->minion->enqueue(orepan_indexing => []);
+    $self->minion->enqueue(orepan_indexing => [$module]);
 
     $self->render(text => $uri, status => 200);
 };
