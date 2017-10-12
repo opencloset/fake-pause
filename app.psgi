@@ -7,7 +7,6 @@ use Mojolicious::Lite;
 use CPAN::Common::Index::LocalPackage;
 use DateTime;
 use MIME::Base64;
-use OrePAN2::CLI::Indexer;
 use Path::Tiny;
 use Try::Tiny;
 
@@ -87,7 +86,8 @@ app->minion->add_task(
         my ($job, $module) = @_;
 
         $job->app->log->info("Orepan Indexing for [$module]...");
-        OrePAN2::CLI::Indexer->new->run($job->app->config->{fakepause}{repo});
+        $job->app->log->info('$ orepan2-indexer ' . $job->app->config->{fakepause}{repo});
+        system "orepan2-indexer", $job->app->config->{fakepause}{repo};
         $job->app->log->info("Done");
     }
 );
