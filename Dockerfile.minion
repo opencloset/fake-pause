@@ -1,4 +1,4 @@
-FROM opencloset/perl:latest
+FROM registry.theopencloset.net/opencloset/perl:latest
 MAINTAINER Hyungsuk Hong <aanoaa@gmail.com>
 
 RUN groupadd opencloset && useradd -g opencloset opencloset

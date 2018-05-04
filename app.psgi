@@ -2,6 +2,8 @@
 
 use utf8;
 
+use version; our $VERSION = qv("v0.1.0");
+
 use Mojolicious::Lite;
 
 use CPAN::Common::Index::LocalPackage;

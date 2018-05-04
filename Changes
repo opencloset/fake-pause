@@ -1,2 +1,4 @@
+  - travis-ci 에서 docker image 를 build
+
 v0.1.0    Thu, 02 Nov 2017 15:58:53 +0900
   - dockerize
