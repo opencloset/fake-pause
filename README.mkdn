@@ -1,3 +1,7 @@
+# fake-pause #
+
+[![Build Status](https://travis-ci.org/opencloset/fake-pause.svg?branch=v0.1.2)](https://travis-ci.org/opencloset/fake-pause)
+
 RUN
 ----
 
