@@ -13,6 +13,7 @@ RUN cpanm --notest \
 # Everything up to cached.
 WORKDIR /home/opencloset/service/cpan.theopencloset.net
 COPY . .
+RUN mv app.conf.sample app.conf
 RUN chown -R opencloset:opencloset .
 
 USER opencloset
