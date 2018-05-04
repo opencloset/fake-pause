@@ -2,7 +2,7 @@
 
 use utf8;
 
-use version; our $VERSION = qv("v0.1.1");
+use version; our $VERSION = qv("v0.1.2");
 
 use Mojolicious::Lite;
 
